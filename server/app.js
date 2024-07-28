@@ -4,10 +4,9 @@ const cors = require('cors');
 const clientRequests = require('./src/controllers/clientRequests.js');
 
 const app = express();
-// Middleware to parse JSON bodies
-app.use(express.json()); // For parsing application/json
 
-// Enable CORS for all routes
+app.use(express.json());
+
 app.use(cors());
 
 app.use('/client-requests', clientRequests);

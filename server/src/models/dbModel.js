@@ -23,5 +23,6 @@ async function updateID(id, status) {
 
 module.exports = {
   setID,
-  updateID
+  updateID,
+  db
 };

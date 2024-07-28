@@ -11,7 +11,7 @@ class ReturnObject {
     console.log('Error Message: ', this.errorMessage);
   }
 
-  isSuccess() {
+  success() {
     return Boolean(this.status);
   }
 }

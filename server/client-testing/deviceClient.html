@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Device Emulator</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>Device</h1>
+
+    <h2>Websocket Status:</h2>
+    <p id="wsStatus">Not Connected</p>
+
+    <h4 id="messages">No messages yet</h4>
+
+
+	  <script>
+      const wsStatusP = document.getElementById('wsStatus');
+      const messages = document.getElementById('messages');
+
+
+      const type = 'device';
+      const id = 'device_test_123';
+      const wsURL = 'ws://localhost:8080?' + 'type=' + type + '&id=' + id;
+
+      const ws = new WebSocket(wsURL);
+
+      // on open
+      ws.addEventListener('open', () => {
+        wsStatusP.innerText = 'Connected';
+      })
+      // on close
+      ws.addEventListener('close', () => {
+        wsStatusP.innerText = 'Disconnected';
+      })
+      // on message
+      ws.addEventListener('message', (event) => {
+        messages.innerText = event.data;
+      })
+
+    </script>
+  </body>
+</html>

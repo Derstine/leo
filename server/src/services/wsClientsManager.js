@@ -1,7 +1,8 @@
 var wsClients = {};
 
-function addWsConnection(id, ws) {
-  wsClients[id] = ws;
+// returns error if type not connection or client
+function addWsConnection(type, id, ws) {
+  wsClients[id] = {'type': type, 'websocket': ws};
 }
 
 function closeWsConnection(id) {
@@ -9,7 +10,7 @@ function closeWsConnection(id) {
 }
 
 function getWsConnection(id) {
-  return wsClients[id];
+  return wsClients[id].websocket;
 }
 
 module.exports = {
