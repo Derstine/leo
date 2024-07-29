@@ -1,5 +1,5 @@
 const { addWsConnection, closeWsConnection } = require('../services/wsClientsManager')
-const { initWsConnection } = require('../services/wsConnections')
+const { initWsConnection, terminateWsConnection } = require('../services/wsConnections')
 const Connection = require('../services/connectionTypes')
 const { setID, updateID } = require('../models/dbModel')
 const readMessage = require('../services/readDeviceMessages')
@@ -26,9 +26,10 @@ async function wsController(ws, req) {
   });
 
   ws.on("close", async () => {
-    console.log("client disconnected");
-    closeWsConnection(clientID)
-    await updateID(clientID, {'ws': false});
+    // implies that type is correct and id is in db
+    if(roWsConnection.success()) {
+      terminateWsConnection(type, id, ws);
+    }
   });
 }
 

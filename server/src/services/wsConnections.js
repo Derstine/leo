@@ -1,19 +1,20 @@
 const ReturnObject = require('./returnObject')
 const Connection = require('./connectionTypes')
 const { addWsConnection, closeWsConnection } = require('../services/wsClientsManager')
-const initWebFirestore = require('../models/webModel')
+const { initWebFirestore, terminateWebFirestore } = require('../models/webModel')
 
 async function initWsConnection(type, id, ws) {
   if(type === Connection.WEB || type === Connection.DEVICE) {
     addWsConnection(type, id, ws)
 
     if(type === Connection.WEB) {
-      initWebFirestore(id)
-      // update ws value
-      // get each added_device and push the web id to those devices in the db
+      var ro_initWebFirestore = await initWebFirestore(id)
+      if(!ro_initWebFirestore.success()) {
+        ro_initWebFirestore.log();
+      }
     } else {
       // type is device
-      // update ws value
+      
     }
 
     // return success
@@ -24,10 +25,19 @@ async function initWsConnection(type, id, ws) {
   }
 }
 
+async function terminateWsConnection(type, id, ws) {
+  closeWsConnection(id)
+
+  if(type === Connection.WEB) {
+    terminateWebFirestore(id)
+  }
+}
+
 async function handleWsMessages(message, type, id, ws) {
 
 }
 
 module.exports = {
-  initWsConnection
+  initWsConnection,
+  terminateWsConnection
 };
