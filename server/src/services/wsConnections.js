@@ -4,9 +4,9 @@ const { addWsConnection, closeWsConnection } = require('../services/wsClientsMan
 const { initWebFirestore, terminateWebFirestore } = require('../models/webModel')
 
 async function initWsConnection(type, id, ws) {
-  if(type === Connection.WEB || type === Connection.DEVICE) {
+  try {
     addWsConnection(type, id, ws)
-
+  
     if(type === Connection.WEB) {
       var ro_initWebFirestore = await initWebFirestore(id)
       if(!ro_initWebFirestore.success()) {
@@ -16,12 +16,11 @@ async function initWsConnection(type, id, ws) {
       // type is device
       
     }
-
-    // return success
+  
     return new ReturnObject(true)
-  } else {
-    // stop everything
-    return new ReturnObject(false, ('Connection type is undefined, recieved type: ' + type))
+    
+  } catch (error) {
+    return new ReturnObject(false, 'Something went wrong in websocket initialization', error);
   }
 }
 

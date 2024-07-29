@@ -20,9 +20,28 @@ async function updateID(id, status) {
   await docRef.update(status);
 }
 
+async function docExists(col, docID) {
+  const docRef = db.collection(col).doc(docID);
+  const doc = await docRef.get();
+
+  return doc.exists;
+}
+
+async function objectExists(col, docID, objectName, objectType) {
+  const docRef = db.collection(col).doc(docID);
+  const doc = await docRef.get();
+
+  const data = doc.data();
+  if (objectName in data && typeof data.ws === objectType) {
+    return true;
+  }
+  return false;
+}
 
 module.exports = {
   setID,
   updateID,
+  docExists,
+  objectExists,
   db
 };

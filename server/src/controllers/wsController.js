@@ -1,5 +1,6 @@
 const { addWsConnection, closeWsConnection } = require('../services/wsClientsManager')
 const { initWsConnection, terminateWsConnection } = require('../services/wsConnections')
+const validateClient = require('../services/validation')
 const Connection = require('../services/connectionTypes')
 const { setID, updateID } = require('../models/dbModel')
 const readMessage = require('../services/readDeviceMessages')
@@ -11,9 +12,15 @@ async function wsController(ws, req) {
   // id is code that can indentify client or device
   const { type, id } = parameters;
 
+  var roValidation  = await validateClient(type, id);
+  if(!roValidation.success()) {
+    ws.close(1003, 'Websocket connected but not allowed');
+    roValidation.log();
+  }
+
   var roWsConnection = await initWsConnection(type, id, ws);
   if(!roWsConnection.success()) {
-    ws.close(1003, 'Websocket connected but not allowed')
+    ws.close(1003, 'Something went wrong in websocket initialization')
     roWsConnection.log(); // log error
   }
 
