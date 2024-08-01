@@ -1,5 +1,5 @@
 const ReturnObject = require('./returnObject')
-const Connection = require('./connectionTypes')
+const Connection = require('./modelsEnum')
 const { addWsConnection, closeWsConnection } = require('../services/wsClientsManager')
 const { initWebFirestore, terminateWebFirestore } = require('../models/webModel')
 

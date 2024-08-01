@@ -1,7 +1,7 @@
 const { addWsConnection, closeWsConnection } = require('../services/wsClientsManager')
 const { initWsConnection, terminateWsConnection } = require('../services/wsConnections')
 const validateClient = require('../services/validation')
-const Connection = require('../services/connectionTypes')
+const Connection = require('../services/modelsEnum')
 const { setID, updateID } = require('../models/dbModel')
 const readMessage = require('../services/readDeviceMessages')
 const url = require('url');

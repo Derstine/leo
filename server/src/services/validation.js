@@ -1,11 +1,11 @@
 const ReturnObject = require('./returnObject')
-const Connection = require('./connectionTypes')
+const MODEL = require('./modelsEnum')
 
 const { docExists, objectExists } = require('../models/dbModel')
 
 async function validateClient(type, id) {
   // if it doesn't have a type
-  if(type !== Connection.WEB && type !== Connection.DEVICE) {
+  if(type !== MODEL.WEB && type !== MODEL.ESP8266) {
     return new ReturnObject(false, 'Client type not allowed');
   }
 
@@ -22,4 +22,18 @@ async function validateClient(type, id) {
   return new ReturnObject(true)
 }
 
-module.exports = validateClient;
+async function validateInit(id, model) {
+  // id is found in db
+  if(docExists('ids', id)) {
+    return new ReturnObject(false, 'ID already exists');
+  }
+
+  // model is not valid
+  if(model !== MODEL.WEB && model !== MODEL.ESP8266) {
+    return new ReturnObject(false, 'Model is not allowed');
+  }
+
+  return new ReturnObject(true);
+}
+
+module.exports = {validateClient, validateInit};
