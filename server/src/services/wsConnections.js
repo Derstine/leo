@@ -1,21 +1,13 @@
 const ReturnObject = require('./returnObject')
-const Connection = require('./modelsEnum')
+const MODEL = require('./modelsEnum')
 const { addWsConnection, closeWsConnection } = require('../services/wsClientsManager')
-const { initWebFirestore, terminateWebFirestore } = require('../models/webModel')
+const { updateID } = require('../models/dbModel')
 
-async function initWsConnection(type, id, ws) {
+async function initWsConnection(id, ws) {
   try {
-    addWsConnection(type, id, ws)
+    addWsConnection(id, ws)
   
-    if(type === Connection.WEB) {
-      var ro_initWebFirestore = await initWebFirestore(id)
-      if(!ro_initWebFirestore.success()) {
-        ro_initWebFirestore.log();
-      }
-    } else {
-      // type is device
-      
-    }
+    await updateID(id, {'status.connected': true})
   
     return new ReturnObject(true)
     
@@ -24,12 +16,10 @@ async function initWsConnection(type, id, ws) {
   }
 }
 
-async function terminateWsConnection(type, id, ws) {
+async function terminateWsConnection(id) {
   closeWsConnection(id)
 
-  if(type === Connection.WEB) {
-    terminateWebFirestore(id)
-  }
+  await updateID(id, {'status.connected': false})
 }
 
 async function handleWsMessages(message, type, id, ws) {

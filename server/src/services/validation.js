@@ -1,22 +1,17 @@
 const ReturnObject = require('./returnObject')
 const MODEL = require('./modelsEnum')
 
-const { docExists, objectExists } = require('../models/dbModel')
+const { docExists } = require('../models/dbModel')
 
-async function validateClient(type, id) {
-  // if it doesn't have a type
-  if(type !== MODEL.WEB && type !== MODEL.ESP8266) {
-    return new ReturnObject(false, 'Client type not allowed');
+async function validateClient(id) {
+  // if id is an empty string
+  if(!id || id === '' || typeof id !== 'string') {
+    return new ReturnObject(false, 'No ID given');
   }
 
   // if id not found in database
-  if(!await docExists('ids', id)) {
+  if(!(await docExists('ids', id))) {
     return new ReturnObject(false, 'Client not found')
-  }
-
-  // if it doesn't have the required objects
-  if(!await objectExists('ids', id, 'ws', 'boolean')) {
-    return new ReturnObject(false, 'Required information not found')
   }
 
   return new ReturnObject(true)
@@ -24,7 +19,7 @@ async function validateClient(type, id) {
 
 async function validateInit(id, model) {
   // id is found in db
-  if(docExists('ids', id)) {
+  if(await docExists('ids', id)) {
     return new ReturnObject(false, 'ID already exists');
   }
 

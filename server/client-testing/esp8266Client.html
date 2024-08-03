@@ -4,16 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Admin Dashboard</title>
+    <title>ESP8266</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <h3>Create new client</h3>
-    <input type="text" id="createClientIDText" placeholder="ID"><br><br>
-    <input type="text" id="createClientModelText" placeholder="Model"><br><br>
-    <button id="createClientButton">Create</button><br>
-    <label id="createClientResponse">Response:</label>
-
     <h3>Connect to Webscoket</h3>
     <p id="connectionStatus">Not Connected</p>
     <input type="text" id="wsConnectText" placeholder="ID">
@@ -22,32 +16,8 @@
     <button id="wsMessageButton">Send</button><br><br>
     <label id="wsMessage">Message:</label><br><br>
 
+
     <script>
-      document.getElementById('createClientButton').addEventListener('click', async () => {
-        const clientId = document.getElementById('createClientIDText').value;
-        const clientModel = document.getElementById('createClientModelText').value;
-        const responseLabel = document.getElementById('createClientResponse');
-
-        try {
-          const response = await fetch(`http://localhost:5000/client-requests/create-client`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              id: clientId,
-              model: clientModel
-            })
-          });
-
-          const result = await response.json();
-
-          responseLabel.textContent = `Response: ${result.message}`;
-        } catch (error) {
-          responseLabel.textContent = `Response: Error - ${error.message}`;
-        }
-      });
-
       let socket;
 
       document.getElementById('wsConnectButton').addEventListener('click', () => {
@@ -63,7 +33,13 @@
         };
 
         socket.onmessage = (event) => {
-          wsMessageLabel.textContent = `Message: ${event.data}`;
+          wsMessageLabel.textContent = `Message: ${event.data}`
+          var message = JSON.parse(event.data);
+          if('requester' in message) {
+            if('light' in message) {
+              socket.send(JSON.stringify({update: message.requester, light: message.light}));
+            }
+          }
         };
 
         socket.onerror = (error) => {

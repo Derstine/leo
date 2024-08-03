@@ -3,7 +3,7 @@ const ReturnObject = require('./returnObject');
 const MODEL = require('./modelsEnum')
 
 async function initClient(id, model) {
-  setID(id, {info: {model: model}, status: createStatus(model)});
+  setID(id, {config: {model: model}, status: createStatus(model)});
 }
 
 function createStatus(model) {
